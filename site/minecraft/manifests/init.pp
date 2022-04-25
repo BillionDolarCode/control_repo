@@ -5,6 +5,7 @@ class minecraft {
     file {'/opt/minecraft/minecraft_server.jar':
       ensure => file,
       source => 'https://s3.amazonaws.com/Minecraft.Download/versions/1.12.2/minecraft_server.1.12.2.jar',
+      before => Service['minecraft'],
     }
     package {'java':
       ensure => present,
@@ -18,7 +19,8 @@ class minecraft {
       source => 'puppet:///modules/minecraft/minecraft.service',
     }
     service {'minecraft':
-      ensure => running,
-      enable => true,
+      ensure  => running,
+      enable  => true,
+      require => [Package['java'],File['/opt/minecraft/eula.txt'],File['/etc/systemd/system/minecraft.service']],
     }
   }
